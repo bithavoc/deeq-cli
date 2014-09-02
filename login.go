@@ -2,6 +2,8 @@ package main
 
 import (
     prompt "github.com/bithavoc/goprompt"
+    id "github.com/bithavoc/id-go-client"
+    "fmt"
 )
 
 var loginCommand = &Command {
@@ -15,11 +17,13 @@ var loginCommand = &Command {
                             {
                                 Name: "email",
                                 Title: "Email",
+                                DefaultValue: "im@bithavoc.io",
                                 Instructions: "Enter your bithavoc's email",
                             },
                             {
                                 Name: "password",
                                 Title: "Password",
+                                DefaultValue: "programador_wrong",
                                 Instructions: "Enter your bithavoc's password",
                             },
                             {
@@ -36,8 +40,25 @@ var loginCommand = &Command {
             form := result.Children["form.0"]
             email, password, remember := form.Children["email"], form.Children["password"], form.Children["remember"]
 
+            app := cmd.GetApplication().(DeeqApplication)
+            authCode, err := app.GetIdClient().LogIn(id.Credentials{
+                email.Value,
+                password.Value,
+            })
+            if err != nil {
+                panic(err)
+            }
 
 
+
+            if remember.Value == "yes" {
+
+            }
+            /*token, err := app.GetIdClient().Authorize(authCode)
+            if err != nil {
+                panic(err)
+            }*/
+            fmt.Printf("%+v\n", authCode)
         },
         Description: "Log-in using your Bithavoc's credentials",
         Help: `

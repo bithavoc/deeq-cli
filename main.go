@@ -6,68 +6,75 @@ import (
     "io"
     "text/template"
     "strings"
+    id "github.com/bithavoc/id-go-client"
 )
+
+type BasicApplication struct {
+    commands []*Command
+}
+
+type Application interface {
+    PrintUsage()
+    queryCommandByName(name string) *Command
+    GetCommands() []*Command
+}
+
+func (app *BasicApplication) AddCommand(cmd *Command) {
+    app.commands = append(app.commands, cmd)
+}
+
+func (app *BasicApplication) GetCommands() []*Command {
+    return app.commands
+}
+
+func run(app Application) {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("FAILED:", r)
+            os.Exit(1)
+        } else {
+            fmt.Println("OK")
+        }
+    }()
+    if app.GetCommands() != nil {
+        for _, cmd := range(app.GetCommands()) {
+            cmd.app = app
+        }
+    }
+    appArgs = os.Args[1:]
+    mainCommandName := getAppArg(0)
+    commandTarget := getAppArg(1)
+    if mainCommandName == "" || mainCommandName == "help" {
+        if commandTarget == "" {
+            // print help
+            printAbout(ShortAbout)
+            app.PrintUsage()
+        } else {
+            // show help of specific command
+            cmd := app.queryCommandByName(mainCommandName)
+            if cmd == nil {
+                app.PrintUsage()
+            } else {
+                // print command help
+                cmd.PrintUsage()
+            }
+        }
+        os.Exit(2)
+    }
+    cmd := app.queryCommandByName(mainCommandName)
+    cmd.Implementation(cmd, appArgs[1:])
+}
 
 type Command struct {
     Name string
     Description string
     Help string
     Implementation func(cmd *Command, args []string)
+    app Application
 }
 
-var commands = []*Command {
-    loginCommand,
-    {
-        Name: "signup",
-        Description: "Sign-up for a FREE Bithavoc account",
-        Help: `signup a task a given task
-            Examples:
-
-        `,
-    },
-    {
-        Name: "create",
-        Description: "creates a new task",
-        Help: `creates a task a given task
-            Examples:
-        `,
-    },
-    {
-        Name: "delete",
-        Description: "deletes a task",
-        Help: `deletes a given task
-            Examples:
-        `,
-    },
-    {
-        Name: "start",
-        Description: "saves the task as current",
-        Help: `starts a given task
-            Examples:
-        `,
-    },
-    {
-        Name: "complete",
-        Description: "completes a task (uses current task as default)",
-        Help: `completes a given task
-
-        `,
-    },
-    {
-        Name: "list",
-        Description: "list tasks in a specific hashtag",
-        Help: `lists all the tasks in a specific hashtags
-
-        `,
-    },
-    {
-        Name: "sync",
-        Description: "synchronize your local tasks with in the cloud",
-        Help: `syncs the 
-
-        local tasks against the cloud
-        `,
-    },
+func (cmd *Command)GetApplication() Application {
+    return cmd.app
 }
 
 type AboutContent int16
@@ -111,16 +118,16 @@ func tmpl(w io.Writer, text string, data interface{}) {
     }
 }
 
-func printUsage() {
-    tmpl(os.Stderr, usageTemplate, commands)
+func (app *BasicApplication) PrintUsage() {
+    tmpl(os.Stderr, usageTemplate, app.GetCommands())
 }
 
 func (cmd *Command)PrintUsage() {
     fmt.Fprintf(os.Stderr, cmd.Help)
 }
 
-func queryCommandByName(name string) *Command {
-    for _, cmd := range commands {
+func (app *BasicApplication) queryCommandByName(name string) *Command {
+    for _, cmd := range app.GetCommands() {
         if cmd.Name == name {
             return cmd
         }
@@ -129,27 +136,82 @@ func queryCommandByName(name string) *Command {
     return nil
 }
 
-func main() {
-    appArgs = os.Args[1:]
-    mainCommandName := getAppArg(0)
-    commandTarget := getAppArg(1)
-    if mainCommandName == "" || mainCommandName == "help" {
-        if commandTarget == "" {
-            // print help
-            printAbout(ShortAbout)
-            printUsage()
-        } else {
-            // show help of specific command
-            cmd := queryCommandByName(mainCommandName)
-            if cmd == nil {
-                printUsage()
-            } else {
-                // print command help
-                cmd.PrintUsage()
-            }
-        }
-        os.Exit(2)
-    }
-    cmd := queryCommandByName(mainCommandName)
-    cmd.Implementation(cmd, appArgs[1:])
+type DeeqApplication interface {
+    Application
+    GetIdClient() id.Client
 }
+
+type DeeqApp struct {
+    BasicApplication
+    Id id.Client
+}
+
+func (app * DeeqApp) GetIdClient() id.Client {
+    return app.Id
+}
+
+func main() {
+    app := &DeeqApp {
+        Id: id.NewClient("<app-id>"),
+    }
+    app.AddCommand(loginCommand)
+    run(app)
+}
+
+/*
+
+
+                {
+                    Name: "signup",
+                    Description: "Sign-up for a FREE Bithavoc account",
+                    Help: `signup a task a given task
+                    Examples:
+
+                    `,
+                },
+                {
+                    Name: "create",
+                    Description: "creates a new task",
+                    Help: `creates a task a given task
+                    Examples:
+                    `,
+                },
+                {
+                    Name: "delete",
+                    Description: "deletes a task",
+                    Help: `deletes a given task
+                    Examples:
+                    `,
+                },
+                {
+                    Name: "start",
+                    Description: "saves the task as current",
+                    Help: `starts a given task
+                    Examples:
+                    `,
+                },
+                {
+                    Name: "complete",
+                    Description: "completes a task (uses current task as default)",
+                    Help: `completes a given task
+
+                    `,
+                },
+                {
+                    Name: "list",
+                    Description: "list tasks in a specific hashtag",
+                    Help: `lists all the tasks in a specific hashtags
+
+                    `,
+                },
+                {
+                    Name: "sync",
+                    Description: "synchronize your local tasks with in the cloud",
+                    Help: `syncs the 
+
+                    local tasks against the cloud
+                    `,
+                },
+            },
+
+*/
