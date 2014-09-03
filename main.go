@@ -4,9 +4,13 @@ import (
     "fmt"
     "os"
     "io"
+    "io/ioutil"
     "text/template"
     "strings"
+    "errors"
     id "github.com/bithavoc/id-go-client"
+    "path/filepath"
+    "encoding/json"
 )
 
 type BasicApplication struct {
@@ -30,7 +34,11 @@ func (app *BasicApplication) GetCommands() []*Command {
 func run(app Application) {
     defer func() {
         if r := recover(); r != nil {
-            fmt.Println("FAILED:", r)
+            if _, ok := r.(*id.IdError); ok {
+                fmt.Println("FAILED:", r)
+            } else {
+                panic(r)
+            }
             os.Exit(1)
         } else {
             fmt.Println("OK")
@@ -139,15 +147,87 @@ func (app *BasicApplication) queryCommandByName(name string) *Command {
 type DeeqApplication interface {
     Application
     GetIdClient() id.Client
+    SetCurrentUser(user id.User, save bool) error
+    GetCurrentUser() id.User
 }
 
 type DeeqApp struct {
     BasicApplication
     Id id.Client
+    CurrentUser id.User
 }
 
 func (app * DeeqApp) GetIdClient() id.Client {
     return app.Id
+}
+
+func (cmd *Command) GetDeeqApplication() DeeqApplication {
+    app := cmd.GetApplication().(DeeqApplication)
+    return app
+}
+
+func (app *DeeqApp) GetCurrentUser() id.User {
+    return app.CurrentUser
+}
+
+func (app *DeeqApp) SetCurrentUser(user id.User, save bool) error {
+    app.CurrentUser = user
+    if save {
+        return app.SaveCurrentUser()
+    }
+    return nil
+}
+
+func retrieveAppUserHome() string {
+    home := os.Getenv("HOME")
+    if home == "" {
+        panic(errors.New("User doesn't have HOME? is this Windows? Da fuq is going on"))
+    }
+    return home
+}
+
+func getCurrentUserFilePath() string {
+    return filepath.Join(retrieveAppUserHome(), ".deeq_user")
+}
+
+func (app *DeeqApp) SaveCurrentUser() error {
+    user := app.GetCurrentUser()
+    filePath := getCurrentUserFilePath()
+    if user.Token.Code != "" {
+        serialized, err := json.Marshal(user)
+        if err != nil {
+            return err
+        }
+        err = ioutil.WriteFile(filePath, serialized, os.ModePerm)
+        return err
+    } else {
+        _, err := os.Stat(filePath)
+        if err == nil {
+            err := os.Remove(filePath)
+            if err != nil {
+                return err
+            }
+        }
+    }
+    return nil
+}
+
+func (app *DeeqApp) LoadCurrentUser() error {
+    filePath := getCurrentUserFilePath()
+    _, err := os.Stat(filePath)
+    if err == nil {
+        if fileContent, err := ioutil.ReadFile(filePath); err == nil {
+            user := id.User{}
+            if err := json.Unmarshal(fileContent, &user); err == nil {
+                app.SetCurrentUser(user, false)
+            } else {
+                return err
+            }
+        } else {
+            return err
+        }
+    }
+    return nil
 }
 
 func main() {
@@ -155,6 +235,10 @@ func main() {
         Id: id.NewClient("<app-id>"),
     }
     app.AddCommand(loginCommand)
+    app.AddCommand(logoutCommand)
+    if err:= app.LoadCurrentUser(); err != nil {
+        panic(err)
+    }
     run(app)
 }
 
