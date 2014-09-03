@@ -6,8 +6,8 @@ import (
     "fmt"
 )
 
-var createCommand = &Command {
-        Name: "create",
+var completeCommand = &Command {
+        Name: "complete",
         Implementation: func(cmd *Command, args []string) {
             app := cmd.GetDeeqApplication()
             if app.GetCurrentUser().Token.Code == "" {
@@ -16,12 +16,12 @@ var createCommand = &Command {
             prompt := &prompt.Prompt {
                 Forms : []*prompt.Form {
                     {
-                        Title: "Enter the content of the task, include as many #hashtags as you need to organize it",
+                        Title: "Enter the reference for the task you want to complete",
                         Fields: []*prompt.Field {
                             {
-                                Name: "text",
-                                Title: "Text",
-                                Instructions: "Please enter the text of your new task and don't forget to use #one or #more hashtags",
+                                Name: "reference",
+                                Title: "Task Reference",
+                                Instructions: `Please enter the reference identifier for the task you want to complete, this identifier looks like 'GMWJGSAPGA' and you get it when the task is created`,
                             },
                         },
                     },
@@ -29,18 +29,19 @@ var createCommand = &Command {
             }
             result := prompt.Process()
             form := result.Children["form.0"]
-            textAnswer := form.Children["text"]
+            referenceAnswer := form.Children["reference"]
 
-            tid := deeq.NewTaskId()
-            stask, err := app.GetDeeqClient().SetTask(&deeq.Task {
-                Id: tid,
-                Text: textAnswer.Value,
-                Status: deeq.TaskStatusIncomplete,
-            })
+            referenceId := deeq.TaskId(referenceAnswer.Value)
+            task, err := app.GetDeeqClient().GetTask(referenceId)
             if err != nil {
                 panic(err)
             }
-            fmt.Println("Created ", stask.Id)
+            task.Status = deeq.TaskStatusComplete
+            stask, err := app.GetDeeqClient().SetTask(task)
+            if err != nil {
+                panic(err)
+            }
+            fmt.Println("Completed ", stask.Id)
         },
         Description: "Creates a new task with the given #hashtags in the text",
         Help: `

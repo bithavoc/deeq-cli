@@ -12,6 +12,8 @@ import (
     deeq "github.com/bithavoc/deeq-go-client"
     "path/filepath"
     "encoding/json"
+    "math/rand"
+    "time"
 )
 
 type BasicApplication struct {
@@ -32,11 +34,17 @@ func (app *BasicApplication) GetCommands() []*Command {
     return app.commands
 }
 
+func showNiceError(err interface{}) {
+    fmt.Println("FAILED:", err)
+}
+
 func run(app Application) {
     defer func() {
         if r := recover(); r != nil {
             if _, ok := r.(*id.IdError); ok {
-                fmt.Println("FAILED:", r)
+                showNiceError(r)
+            } else if _, ok := r.(*deeq.DeeqError); ok {
+                showNiceError(r)
             } else {
                 panic(r)
             }
@@ -60,7 +68,7 @@ func run(app Application) {
             app.PrintUsage()
         } else {
             // show help of specific command
-            cmd := app.queryCommandByName(mainCommandName)
+            cmd := app.queryCommandByName(commandTarget)
             if cmd == nil {
                 app.PrintUsage()
             } else {
@@ -71,6 +79,10 @@ func run(app Application) {
         os.Exit(2)
     }
     cmd := app.queryCommandByName(mainCommandName)
+    if cmd == nil {
+        app.PrintUsage()
+        os.Exit(2)
+    }
     cmd.Implementation(cmd, appArgs[1:])
 }
 
@@ -239,12 +251,14 @@ func (app *DeeqApp) LoadCurrentUser() error {
 }
 
 func main() {
+    rand.Seed(time.Now().Unix())
     app := &DeeqApp {
         Id: id.NewClient("<app-id>"),
     }
     app.AddCommand(loginCommand)
     app.AddCommand(logoutCommand)
     app.AddCommand(createCommand)
+    app.AddCommand(completeCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }
