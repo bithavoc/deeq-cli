@@ -259,6 +259,7 @@ func main() {
     app.AddCommand(logoutCommand)
     app.AddCommand(createCommand)
     app.AddCommand(completeCommand)
+    app.AddCommand(deleteCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }
