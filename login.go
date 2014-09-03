@@ -17,13 +17,11 @@ var loginCommand = &Command {
                             {
                                 Name: "email",
                                 Title: "Email",
-                                DefaultValue: "im@bithavoc.io",
                                 Instructions: "Enter your bithavoc's email",
                             },
                             {
                                 Name: "password",
                                 Title: "Password",
-                                DefaultValue: "programador",
                                 Instructions: "Enter your bithavoc's password",
                             },
                             {

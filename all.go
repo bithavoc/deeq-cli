@@ -44,7 +44,13 @@ var allCommand = &Command {
                 }
                 fmt.Printf("%s - %s (%s)\n", task.Id, task.Text, st)
             }
-            fmt.Println("Tasks ", len(tasks))
+            if len(tasks) == 0 {
+                fmt.Println("No tasks found :(")
+            } else if len(tasks) == 1 {
+                fmt.Println("1 task found")
+            } else {
+                fmt.Printf("%d tasks found\n", len(tasks))
+            }
         },
         Description: "Creates a new task with the given #hashtags in the text",
         Help: `
