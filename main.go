@@ -9,6 +9,7 @@ import (
     "strings"
     "errors"
     id "github.com/bithavoc/id-go-client"
+    deeq "github.com/bithavoc/deeq-go-client"
     "path/filepath"
     "encoding/json"
 )
@@ -149,16 +150,22 @@ type DeeqApplication interface {
     GetIdClient() id.Client
     SetCurrentUser(user id.User, save bool) error
     GetCurrentUser() id.User
+    GetDeeqClient() *deeq.Client
 }
 
 type DeeqApp struct {
     BasicApplication
     Id id.Client
     CurrentUser id.User
+    Deeq *deeq.Client
 }
 
 func (app * DeeqApp) GetIdClient() id.Client {
     return app.Id
+}
+
+func (app * DeeqApp) GetDeeqClient() *deeq.Client {
+    return app.Deeq
 }
 
 func (cmd *Command) GetDeeqApplication() DeeqApplication {
@@ -175,6 +182,7 @@ func (app *DeeqApp) SetCurrentUser(user id.User, save bool) error {
     if save {
         return app.SaveCurrentUser()
     }
+    app.Deeq = deeq.NewClient(app.CurrentUser.Token)
     return nil
 }
 
@@ -236,66 +244,10 @@ func main() {
     }
     app.AddCommand(loginCommand)
     app.AddCommand(logoutCommand)
+    app.AddCommand(createCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }
     run(app)
 }
 
-/*
-
-
-                {
-                    Name: "signup",
-                    Description: "Sign-up for a FREE Bithavoc account",
-                    Help: `signup a task a given task
-                    Examples:
-
-                    `,
-                },
-                {
-                    Name: "create",
-                    Description: "creates a new task",
-                    Help: `creates a task a given task
-                    Examples:
-                    `,
-                },
-                {
-                    Name: "delete",
-                    Description: "deletes a task",
-                    Help: `deletes a given task
-                    Examples:
-                    `,
-                },
-                {
-                    Name: "start",
-                    Description: "saves the task as current",
-                    Help: `starts a given task
-                    Examples:
-                    `,
-                },
-                {
-                    Name: "complete",
-                    Description: "completes a task (uses current task as default)",
-                    Help: `completes a given task
-
-                    `,
-                },
-                {
-                    Name: "list",
-                    Description: "list tasks in a specific hashtag",
-                    Help: `lists all the tasks in a specific hashtags
-
-                    `,
-                },
-                {
-                    Name: "sync",
-                    Description: "synchronize your local tasks with in the cloud",
-                    Help: `syncs the 
-
-                    local tasks against the cloud
-                    `,
-                },
-            },
-
-*/
