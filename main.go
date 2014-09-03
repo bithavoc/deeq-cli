@@ -260,6 +260,7 @@ func main() {
     app.AddCommand(createCommand)
     app.AddCommand(completeCommand)
     app.AddCommand(deleteCommand)
+    app.AddCommand(allCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }
