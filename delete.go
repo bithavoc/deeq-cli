@@ -8,6 +8,7 @@ import (
 
 var deleteCommand = &Command {
         Name: "delete",
+        RequiresUser: true,
         Implementation: func(cmd *Command, args []string) {
             app := cmd.GetDeeqApplication()
             if app.GetCurrentUser().Token.Code == "" {

@@ -83,6 +83,14 @@ func run(app Application) {
         app.PrintUsage()
         os.Exit(2)
     }
+    if cmd.RequiresUser {
+        fmt.Fprintf(os.Stderr, `
+    I'm sorry, please log-in first
+    `)
+        cmd := app.queryCommandByName("login")
+        cmd.PrintUsage()
+        os.Exit(2)
+    }
     cmd.Implementation(cmd, appArgs[1:])
 }
 
@@ -92,6 +100,7 @@ type Command struct {
     Help string
     Implementation func(cmd *Command, args []string)
     app Application
+    RequiresUser bool
 }
 
 func (cmd *Command)GetApplication() Application {
@@ -261,6 +270,7 @@ func main() {
     app.AddCommand(completeCommand)
     app.AddCommand(deleteCommand)
     app.AddCommand(allCommand)
+    app.AddCommand(whoamiCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }
