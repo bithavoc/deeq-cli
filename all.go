@@ -22,12 +22,13 @@ var allCommand = &Command {
                                 Name: "tag",
                                 Title: "Tag Name",
                                 Instructions: `Please enter the name of tag you want to list`,
+                                Shorthand: "t",
                             },
                         },
                     },
                 },
             }
-            result := prompt.Process()
+            result := prompt.Process(args)
             form := result.Children["form.0"]
             tagAnswer := form.Children["tag"]
 

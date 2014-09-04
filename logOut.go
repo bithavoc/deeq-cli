@@ -8,11 +8,9 @@ import (
 
 var logoutCommand = &Command {
         Name: "logout",
+        RequiresUser: true,
         Implementation: func(cmd *Command, args []string) {
             app := cmd.GetDeeqApplication()
-            if app.GetCurrentUser().Token.Code == "" {
-                return
-            }
             prompt := &prompt.Prompt {
                 Forms : []*prompt.Form {
                     {
@@ -22,12 +20,13 @@ var logoutCommand = &Command {
                                 Name: "sure",
                                 Title: "Do you really want to logout? (yes/no)",
                                 Instructions: "Please tell me if you really want to log out, type either yes or no",
+                                Shorthand: "s",
                             },
                         },
                     },
                 },
             }
-            result := prompt.Process()
+            result := prompt.Process(args)
             form := result.Children["form.0"]
             logoutAnswer := form.Children["sure"]
             if logoutAnswer.Value == "yes" {

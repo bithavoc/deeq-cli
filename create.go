@@ -23,12 +23,13 @@ var createCommand = &Command {
                                 Name: "text",
                                 Title: "Text",
                                 Instructions: "Please enter the text of your new task and don't forget to use #one or #more hashtags",
+                                Shorthand: "t",
                             },
                         },
                     },
                 },
             }
-            result := prompt.Process()
+            result := prompt.Process(args)
             form := result.Children["form.0"]
             textAnswer := form.Children["text"]
 

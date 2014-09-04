@@ -18,23 +18,26 @@ var loginCommand = &Command {
                                 Name: "email",
                                 Title: "Email",
                                 Instructions: "Enter your bithavoc's email",
+                                Shorthand: "e",
                             },
                             {
                                 Name: "password",
                                 Title: "Password",
                                 Instructions: "Enter your bithavoc's password",
+                                Shorthand: "p",
                             },
                             {
                                 Name: "remember",
                                 Title: "Remember",
                                 Instructions: "Attach this session to your OS account?",
                                 DefaultValue: "yes",
+                                Shorthand: "r",
                             },
                         },
                     },
                 },
             }
-            result := prompt.Process()
+            result := prompt.Process(args)
             form := result.Children["form.0"]
             email, password, remember := form.Children["email"], form.Children["password"], form.Children["remember"]
 

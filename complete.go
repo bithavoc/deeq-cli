@@ -23,12 +23,13 @@ var completeCommand = &Command {
                                 Name: "reference",
                                 Title: "Task Reference",
                                 Instructions: `Please enter the reference identifier for the task you want to complete, this identifier looks like 'GMWJGSAPGA' and you get it when the task is created`,
+                                Shorthand: "r",
                             },
                         },
                     },
                 },
             }
-            result := prompt.Process()
+            result := prompt.Process(args)
             form := result.Children["form.0"]
             referenceAnswer := form.Children["reference"]
 
