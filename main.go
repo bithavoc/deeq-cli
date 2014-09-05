@@ -16,6 +16,8 @@ import (
     "time"
 )
 
+const appVersion = "1.0.0"
+
 type BasicApplication struct {
     commands []*Command
     userLoggedIn bool
@@ -216,6 +218,16 @@ func (app *DeeqApp) SetCurrentUser(user id.User, save bool) error {
     }
     app.SetUserIsLoggedIn(app.CurrentUser.Token.Code != "")
     app.Deeq = deeq.NewClient(app.CurrentUser.Token)
+    app.Deeq.ApplicationVersion = appVersion
+    app.Deeq.ApplicationUpgradeChanged = func(c *deeq.Client) {
+        if c.ApplicationUpgrade.Available {
+            fmt.Printf("\n! This version of Deeq(v%s) is outdated\n", c.ApplicationUpgrade.Version)
+            if c.ApplicationUpgrade.Message != "" {
+                fmt.Printf("! %s\n", c.ApplicationUpgrade.Message)
+                fmt.Printf("! Follow your upgrade procedure or visit DeeqApp.com for installation instructions\n\n")
+            }
+        }
+    }
     return nil
 }
 
