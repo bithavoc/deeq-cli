@@ -18,12 +18,23 @@ import (
 
 type BasicApplication struct {
     commands []*Command
+    userLoggedIn bool
+}
+
+func (app *BasicApplication) IsUserLoggedIn() bool {
+    return app.userLoggedIn
+}
+
+func (app *BasicApplication) SetUserIsLoggedIn(loggedIn bool) {
+    app.userLoggedIn = loggedIn
 }
 
 type Application interface {
     PrintUsage()
     queryCommandByName(name string) *Command
     GetCommands() []*Command
+    IsUserLoggedIn() bool
+    SetUserIsLoggedIn(loggedIn bool)
 }
 
 func (app *BasicApplication) AddCommand(cmd *Command) {
@@ -83,7 +94,7 @@ func run(app Application) {
         app.PrintUsage()
         os.Exit(2)
     }
-    if cmd.RequiresUser {
+    if cmd.RequiresUser && !app.IsUserLoggedIn() {
         fmt.Fprintf(os.Stderr, `
     I'm sorry, please log-in first
     `)
@@ -203,6 +214,7 @@ func (app *DeeqApp) SetCurrentUser(user id.User, save bool) error {
     if save {
         return app.SaveCurrentUser()
     }
+    app.SetUserIsLoggedIn(app.CurrentUser.Token.Code != "")
     app.Deeq = deeq.NewClient(app.CurrentUser.Token)
     return nil
 }
