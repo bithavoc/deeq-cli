@@ -44,19 +44,47 @@ var createCommand = &Command {
             }
             fmt.Println("Created ", stask.Id)
         },
-        Description: "Creates a new task with the given #hashtags in the text",
+        Description: "Creates a new task",
         Help: `
 
-        If you already logged in using deeq login, you can use this command to forget yourself
+    You can use this command to create tasks.
 
     Examples:
     
-    $ deeq create
-    > Text: I have to create at least one task in #deeq with two or more #hashtags to be #happy
+        $ deeq create
+        > Text: I have to create at least one task in #deeq with two or more #hashtags to be #happy
 
     Or, you can also do everything with a single command:
 
-    $ deeq create --text="I have to create at least one task in #deeq with two ore more #hashtags to be #happy"
+        $ deeq create --text "I have to create at least one task in #deeq with two ore more #hashtags to be #happy"
 
+    Or, use the shorthand arguments:
+
+        $ deeq create -t "I have to create at least one task in #deeq with two ore more #hashtags to be #happy"
+
+    A reference or unique identifier for the task will be provided so you can use to complete or the delete the task.
+
+    The hashtags you use in the text will be used as tags for your task.
+    Tags are linked as parent-child and child-parent relationship.
+
+    Example:
+
+    Task Text: "#design #landing page for #AndroidApp"
+
+    Tags will come out as:
+
+        #design
+        - #AndroidApp
+        - #landing
+
+        #landing
+        - #AndroidApp
+        - #design
+
+        #AndroidApp
+        - #landing
+        - #design
+     
+    For more information on listing the tasks, see the command 'deeq all'.
 `,
     }

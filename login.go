@@ -61,17 +61,20 @@ var loginCommand = &Command {
             }
             fmt.Printf("Welcome %s :)\n", app.GetCurrentUser().Info.Fullname)
         },
-        Description: "Log-in using your Bithavoc's credentials",
+        Description: "Log-in using your user and password",
         Help: `
-    login with the given user and email
+    log-in with the user and password of your account.
 
     Examples:
     
-    $ deeq login
-    > Email: your_email@gmail.com
-    > Password: your_password
+        $ deeq login
+        > Email: your_email@gmail.com
+        > Password: your_password
 
-    $ deeq login --email=your_email@gmail.com --password=your_password
+    or you could pass the values using arguments
 
+        $ deeq login --email=your_email@gmail.com --password=your_password
+
+    Use the 'deeq signup' command to create your account if you don't have one yet.
 `,
     }

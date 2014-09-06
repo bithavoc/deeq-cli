@@ -77,7 +77,6 @@ func run(app Application) {
     if mainCommandName == "" || mainCommandName == "help" {
         if commandTarget == "" {
             // print help
-            printAbout(ShortAbout)
             app.PrintUsage()
         } else {
             // show help of specific command
@@ -87,6 +86,7 @@ func run(app Application) {
             } else {
                 // print command help
                 cmd.PrintUsage()
+                fmt.Println("")
             }
         }
         os.Exit(2)
@@ -126,11 +126,16 @@ const ShortAbout AboutContent = 0
 const LongAbout AboutContent = 1
 
 func printAbout(content AboutContent) {
-    fmt.Println("Deeq 1.0.0")
-    fmt.Println("2014 http://bithavoc.io")
+    fmt.Printf(`
+    Deeq %s - 2014 bithavoc.io
+
+    http://deeqapp.com
+
+`, appVersion)
     if(content == LongAbout) {
         fmt.Println("MIT License")
     }
+    fmt.Println("")
 }
 
 var appArgs []string
@@ -142,14 +147,16 @@ func getAppArg(i int) string {
     return appArgs[i]
 }
 
-var usageTemplate = `Usage: deeq <command> [options] [arguments]
+var usageTemplate = `
+    Usage: deeq <command> [options]
 
-Commands:
+    Commands:
 
-    {{range .}}
-        {{.Name | printf "%-11s"}} {{.Description}}{{end}}
+        {{range .}}
+            {{.Name | printf "%-11s"}} {{.Description}}{{end}}
 
-Run 'deeq help [command]' for details.
+    Run 'deeq help [command]' for details.
+
 `
 
 func tmpl(w io.Writer, text string, data interface{}) {
@@ -166,6 +173,9 @@ func (app *BasicApplication) PrintUsage() {
 }
 
 func (cmd *Command)PrintUsage() {
+    fmt.Fprintf(os.Stderr, `
+Command: %s
+`, cmd.Name)
     fmt.Fprintf(os.Stderr, cmd.Help)
 }
 
@@ -291,10 +301,11 @@ func main() {
     app.AddCommand(loginCommand)
     app.AddCommand(logoutCommand)
     app.AddCommand(createCommand)
+    app.AddCommand(allCommand)
     app.AddCommand(completeCommand)
     app.AddCommand(deleteCommand)
-    app.AddCommand(allCommand)
     app.AddCommand(whoamiCommand)
+    app.AddCommand(aboutCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }

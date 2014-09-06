@@ -39,16 +39,18 @@ var logoutCommand = &Command {
                 fmt.Printf("Thank you %s, good to have you here :)\n", app.GetCurrentUser().Info.Fullname)
             }
         },
-        Description: "Logs out the currently logged-in user",
+        Description: "Log-out the current user",
         Help: `
 
-        If you already logged in using deeq login, you can use this command to forget yourself
+        Use this command to logout
 
     Examples:
     
-    $ deeq logout
-    > Ok, Bye :(
+        $ deeq logout
 
-    Of course, you don't want to do this... you want to use Deeq!... you want to use Deeq! *fades away*
+    or to log-out without confirmation:
+
+        $ deeq logout --sure=yes
+
 `,
     }

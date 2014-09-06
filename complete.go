@@ -45,19 +45,19 @@ var completeCommand = &Command {
             }
             fmt.Println("Completed ", stask.Id)
         },
-        Description: "Creates a new task with the given #hashtags in the text",
+        Description: "Marks a task as completed",
         Help: `
 
-        If you already logged in using deeq login, you can use this command to forget yourself
+    Use this command to mark tasks as completed.
+    You only need the reference to the task you want to complete.
 
     Examples:
     
-    $ deeq create
-    > Text: I have to create at least one task in #deeq with two or more #hashtags to be #happy
+    $ deeq complete
+    > Task Reference: blfotbknks
 
-    Or, you can also do everything with a single command:
+    Or you can also use a shorthand to provide the reference to the task to complete.
 
-    $ deeq create --text="I have to create at least one task in #deeq with two ore more #hashtags to be #happy"
-
+    $ deeq complete -r blfotbknks
 `,
     }

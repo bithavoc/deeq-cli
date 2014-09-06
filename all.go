@@ -54,19 +54,37 @@ var allCommand = &Command {
                 fmt.Printf("%d tasks found\n", len(tasks))
             }
         },
-        Description: "Creates a new task with the given #hashtags in the text",
+        Description: "List all(pending and completed) tasks inside a tag",
         Help: `
 
-        If you already logged in using deeq login, you can use this command to forget yourself
+    Use this command to retrieve all(pending and complete) tasks under a tag.
 
-    Examples:
-    
-    $ deeq create
-    > Text: I have to create at least one task in #deeq with two or more #hashtags to be #happy
+    Example, having a tag structure as follows:    
 
-    Or, you can also do everything with a single command:
+        #design
+        - #AndroidApp
+        - #landing
 
-    $ deeq create --text="I have to create at least one task in #deeq with two ore more #hashtags to be #happy"
+        #landing
+        - #AndroidApp
+        - #design
 
+        #AndroidApp
+        - #landing
+        - #design
+
+    You can use this command to retrieve tasks under a tag:
+
+        $ deeq all #design
+
+    It also works with sub-tags:
+
+        $ deeq all design/landing
+        
+        $ deeq all AndroidApp/landing
+        
+        $ deeq all AndroidApp/design
+
+    For more information on creating tasks, see the command 'deeq create'.
 `,
     }
