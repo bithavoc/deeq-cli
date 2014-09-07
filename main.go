@@ -307,6 +307,7 @@ func main() {
     app.AddCommand(whoamiCommand)
     app.AddCommand(aboutCommand)
     app.AddCommand(signupCommand)
+    app.AddCommand(confirmCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }
