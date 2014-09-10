@@ -16,7 +16,10 @@ import (
     "time"
 )
 
-const appVersion = "1.0.0"
+const (
+    appVersion = "1.0.0"
+    idAppId = "59abb3124156a6e47e39108e36f9f380"
+)
 
 type BasicApplication struct {
     commands []*Command
@@ -296,7 +299,7 @@ func (app *DeeqApp) LoadCurrentUser() error {
 func main() {
     rand.Seed(time.Now().Unix())
     app := &DeeqApp {
-        Id: id.NewClient("<app-id>"),
+        Id: id.NewClient(idAppId),
     }
     app.AddCommand(loginCommand)
     app.AddCommand(logoutCommand)
