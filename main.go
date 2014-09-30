@@ -311,6 +311,7 @@ func main() {
     app.AddCommand(aboutCommand)
     app.AddCommand(signupCommand)
     app.AddCommand(confirmCommand)
+    app.AddCommand(recoverCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }
