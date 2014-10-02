@@ -40,7 +40,7 @@ var confirmCommand = &Command {
     See 'deeq login' for more information.
 `)
         },
-        Description: "Confirm your address of your account",
+        Description: "Confirms email and activates account",
         Help: `
     Once you sign-up for your Free account, you can use this command to confirm
     your account with the code that was sent to your email.
@@ -58,9 +58,9 @@ var confirmCommand = &Command {
 
         $ deeq confirm -c 3b7f87c8f8a
 
-    After you confirm your account you will be able to log-in. Use the 'login' command
+    After you confirm your account you will be able to log-in. Use the 'signin' command
     to start using Deeq.
 
-    See the 'deeq login' command for more information.
+    See the 'deeq signin' command for more information.
 `,
     }

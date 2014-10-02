@@ -67,9 +67,9 @@ var signupCommand = &Command {
 `)
             //cmd.GetApplication().LaunchCommand("confirm", 
         },
-        Description: "Sign-up for a Free account",
+        Description: "Registers user for a Free account",
         Help: `
-    Sign-up for a Free account.
+    Registers user for a Free account.
 
     Examples:
     
@@ -83,8 +83,8 @@ var signupCommand = &Command {
 
         $ deeq signup --fullname --email=your_email@gmail.com --password=your_password --password_confirmation=your_password
 
-    After the signup, you will receive an email with a confirmation code. Use the 'confirm' command with
-    the provided code to use your account.
+    After the sign-up process, you will receive an email with a confirmation code. Use the 'confirm' command with
+    the provided code to activate your account.
 
     See the 'deeq confirm' command for more information.
 `,

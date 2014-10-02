@@ -6,8 +6,8 @@ import (
     "fmt"
 )
 
-var loginCommand = &Command {
-        Name: "login",
+var signInCommand = &Command {
+        Name: "signin",
         Implementation: func(cmd *Command, args []string) {
             prompt := &prompt.Prompt {
                 Forms : []*prompt.Form {
@@ -61,19 +61,19 @@ var loginCommand = &Command {
             }
             fmt.Printf("Welcome %s :)\n", app.GetCurrentUser().Info.Fullname)
         },
-        Description: "Log-in using your user and password",
+        Description: "Signs-in user with email and password",
         Help: `
-    log-in with the user and password of your account.
+    Signs-in user with email and password.
 
     Examples:
     
-        $ deeq login
+        $ deeq signin
         > Email: your_email@gmail.com
         > Password: your_password
 
     or you could pass the values using arguments
 
-        $ deeq login --email=your_email@gmail.com --password=your_password
+        $ deeq signin --email=your_email@gmail.com --password=your_password
 
     Use the 'deeq signup' command to create your account if you don't have one yet.
 `,

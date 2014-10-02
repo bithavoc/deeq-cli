@@ -301,8 +301,8 @@ func main() {
     app := &DeeqApp {
         Id: id.NewClient(idAppId),
     }
-    app.AddCommand(loginCommand)
-    app.AddCommand(logoutCommand)
+    app.AddCommand(signInCommand)
+    app.AddCommand(signOutCommand)
     app.AddCommand(createCommand)
     app.AddCommand(allCommand)
     app.AddCommand(completeCommand)

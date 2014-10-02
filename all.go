@@ -54,7 +54,7 @@ var allCommand = &Command {
                 fmt.Printf("%d tasks found\n", len(tasks))
             }
         },
-        Description: "List all(pending and completed) tasks inside a tag",
+        Description: "Lists all(pending and completed) tasks inside a tag",
         Help: `
 
     Use this command to retrieve all(pending and complete) tasks under a tag.

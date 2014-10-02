@@ -6,8 +6,8 @@ import (
     "fmt"
 )
 
-var logoutCommand = &Command {
-        Name: "logout",
+var signOutCommand = &Command {
+        Name: "signout",
         RequiresUser: true,
         Implementation: func(cmd *Command, args []string) {
             app := cmd.GetDeeqApplication()
@@ -39,18 +39,18 @@ var logoutCommand = &Command {
                 fmt.Printf("Thank you %s, good to have you here :)\n", app.GetCurrentUser().Info.Fullname)
             }
         },
-        Description: "Log-out the current user",
+        Description: "Signs-out the current user",
         Help: `
 
-        Use this command to logout
+        Use this command to sign-out.
 
     Examples:
     
-        $ deeq logout
+        $ deeq signout
 
     or to log-out without confirmation:
 
-        $ deeq logout --sure=yes
+        $ deeq signou --sure=yes
 
 `,
     }

@@ -37,10 +37,10 @@ var recoverCommand = &Command {
     Then use the 'forgot' command to reset your password.
 `)
         },
-        Description: "Get instructions to reset your password",
+        Description: "Sends password reset instructions to user email",
         Help: `
-    If you forgot your password and you do remember your email address,
-    you can use this command to get instructions to reset your password.
+    If you forgot your password but remember your email address,
+    you can use this command to have instructions sent to reset your password.
 
     Examples:
     
@@ -55,8 +55,7 @@ var recoverCommand = &Command {
 
         $ deeq recover -e john.doe@example.com
 
-    As part of the instructions in the email, there is a code you can use
-    with the command 'forgot'.
+    The code received in the email can be entered using the command 'forgot'.
 
     See the 'deeq forgot' command for more information.
 `,

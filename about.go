@@ -5,7 +5,7 @@ var aboutCommand = &Command {
         Implementation: func(cmd *Command, args []string) {
             printAbout(LongAbout)
         },
-        Description: "General information about this command",
+        Description: "Shows general information about this program",
         Help: `
     Example:
 
