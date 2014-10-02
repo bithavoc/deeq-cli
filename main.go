@@ -17,7 +17,7 @@ import (
 )
 
 const (
-    appVersion = "1.0.0"
+    appVersion = "1.0.1"
     idAppId = "59abb3124156a6e47e39108e36f9f380"
 )
 
