@@ -24,6 +24,7 @@ const (
 type BasicApplication struct {
     commands []*Command
     userLoggedIn bool
+    silent bool
 }
 
 func (app *BasicApplication) IsUserLoggedIn() bool {
@@ -40,10 +41,20 @@ type Application interface {
     GetCommands() []*Command
     IsUserLoggedIn() bool
     SetUserIsLoggedIn(loggedIn bool)
+    IsSilent() bool
+    SetSilence(silence bool)
 }
 
 func (app *BasicApplication) AddCommand(cmd *Command) {
     app.commands = append(app.commands, cmd)
+}
+
+func (app *BasicApplication) IsSilent() bool {
+    return app.silent
+}
+
+func (app *BasicApplication) SetSilence(silence bool) {
+    app.silent = silence
 }
 
 func (app *BasicApplication) GetCommands() []*Command {
@@ -66,7 +77,9 @@ func run(app Application) {
             }
             os.Exit(1)
         } else {
-            fmt.Println("OK")
+            if !app.IsSilent() {
+                fmt.Println("OK")
+            }
         }
     }()
     if app.GetCommands() != nil {
@@ -133,10 +146,10 @@ func printAbout(content AboutContent) {
     Deeq %s - 2014 bithavoc.io
 
     http://deeqapp.com
-
 `, appVersion)
     if(content == LongAbout) {
-        fmt.Println("MIT License")
+        fmt.Println(`
+    MIT License`)
     }
     fmt.Println("")
 }
@@ -313,6 +326,7 @@ func main() {
     app.AddCommand(confirmCommand)
     app.AddCommand(recoverCommand)
     app.AddCommand(forgotCommand)
+    app.AddCommand(versionCommand)
     if err:= app.LoadCurrentUser(); err != nil {
         panic(err)
     }
